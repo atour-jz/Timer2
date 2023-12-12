@@ -1,17 +1,32 @@
 import tkinter as tk
 from tkinter import font
+from PIL import Image, ImageTk
+from tkinter import *
+from PIL import Image, ImageTk
 
 class TimerApp: # Erstellt eine Klasse mit dem Namen TimerApp
-    def __init__(self, root): # Erstellt eine Funktion mit dem Namen __init__ und den Parametern self und root
+    def __init__(self, root):
+        self.root = root
+        image = Image.open("logo-vektor.png")  # Use image file name if it's in the same directory
 
-        #layout   
+        # Ändern Sie die Größe des Bildes
+        new_size = (700, 700)  # Setzen Sie die gewünschte Größe hier
+        image = image.resize(new_size, Image.BICUBIC)
+
+        self.logo = ImageTk.PhotoImage(image)
+        self.logo_label = tk.Label(root, image=self.logo, bg="black")
+        self.logo_label.place(relx=0.5, rely=0.5, anchor=CENTER)  # Positioniert das Logo in der Mitte
+
+        # Setzt das Layout des Fensters
         root.geometry("1440x900")           # Setzt die Größe des Fensters auf 1440x900 Pixel 
         root.configure(background='black')  # Setzt den Hintergrund des Fensters (root) auf schwarz 
         root.attributes('-fullscreen', True)
+
+        
         self.font = font.Font(family="Helvetica", size=500) # Setzt die Schriftart auf Helvetica und die Schriftgröße auf 500 Pixel
         self.timer_label = tk.Label(root, text="00:00", fg="red", bg="black", font=self.font) # Erstellt ein Label mit dem Text "00:00" und der Schriftfarbe rot und dem Hintergrund schwarz und der Schriftart Helvetica und der Schriftgröße 500 Pixel 
         self.timer_label.pack(fill='both', expand=True) # Packt das Label in das Fenster (root) ein und zentriert es automatisch in der Mitte des Fensters (root) 
-
+        self.timer_label.pack_forget()  # Versteckt den Timer zu Beginn
 
         #Timer Funktionen 
         self.root = root                    # Setzt die Variable root auf das Fenster (root) 
@@ -20,26 +35,19 @@ class TimerApp: # Erstellt eine Klasse mit dem Namen TimerApp
         self.remaining_time = 0             # Setzt die Variable remaining_time auf 0
         self.is_paused = True               # Setzt die Variable is_paused auf True
 
-
-        #shot_clock_24_button = tk.Button(root, text="24 Sekunden Shot Clock", command=lambda: self.start_timer(24))
-        #shot_clock_24_button.pack()
-
-        #shot_clock_14_button = tk.Button(root, text="14 Sekunden Shot Clock", command=lambda: self.start_timer(14))
-        #shot_clock_14_button.pack()
-
         #Key Bindings
         self.root.bind("<space>", self.toggle_timer)
         self.update_clock()
 
-        #root.bind("1", lambda event: self.start_timer(24))
-        #root.bind("2", lambda event: self.start_timer(14))
         root.bind("1", lambda event: self.set_timer(24))
         root.bind("2", lambda event: self.set_timer(14))
         root.bind("3", self.decrese_timer)
         root.bind("4", self.increase_timer)
-
+        
 
     def set_timer(self, seconds):
+        self.logo_label.pack_forget()
+        self.timer_label.pack(fill='both', expand=True)  # Zeigt den Timer an
         if self.is_paused:
             self.remaining_time = seconds  # Setzt den Timer auf die gegebene Zeit
             self.update_timer_label()
