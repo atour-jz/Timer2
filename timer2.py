@@ -7,6 +7,7 @@ class TimerApp: # Erstellt eine Klasse mit dem Namen TimerApp
         #layout   
         root.geometry("1440x900")           # Setzt die Größe des Fensters auf 1440x900 Pixel 
         root.configure(background='black')  # Setzt den Hintergrund des Fensters (root) auf schwarz 
+        root.attributes('-fullscreen', True)
         self.font = font.Font(family="Helvetica", size=500) # Setzt die Schriftart auf Helvetica und die Schriftgröße auf 500 Pixel
         self.timer_label = tk.Label(root, text="00:00", fg="red", bg="black", font=self.font) # Erstellt ein Label mit dem Text "00:00" und der Schriftfarbe rot und dem Hintergrund schwarz und der Schriftart Helvetica und der Schriftgröße 500 Pixel 
         self.timer_label.pack(fill='both', expand=True) # Packt das Label in das Fenster (root) ein und zentriert es automatisch in der Mitte des Fensters (root) 
@@ -30,15 +31,25 @@ class TimerApp: # Erstellt eine Klasse mit dem Namen TimerApp
         self.root.bind("<space>", self.toggle_timer)
         self.update_clock()
 
-        root.bind("1", lambda event: self.start_timer(24))
-        root.bind("2", lambda event: self.start_timer(14))
+        #root.bind("1", lambda event: self.start_timer(24))
+        #root.bind("2", lambda event: self.start_timer(14))
+        root.bind("1", lambda event: self.set_timer(24))
+        root.bind("2", lambda event: self.set_timer(14))
         root.bind("3", self.decrese_timer)
         root.bind("4", self.increase_timer)
 
 
-    def start_timer(self, seconds):
-        self.remaining_time = seconds
-        self.is_paused = False
+    def set_timer(self, seconds):
+        if self.is_paused:
+            self.remaining_time = seconds  # Setzt den Timer auf die gegebene Zeit
+            self.update_timer_label()
+        else:
+            self.remaining_time = seconds  # Setzt den Timer auf die gegebene Zeit
+            self.start_timer(self.remaining_time)  # Startet den Timer wieder
+    
+    #def start_timer(self, seconds):
+     #   self.remaining_time = seconds
+      #  self.is_paused = False
 
     def toggle_timer(self, event):
         self.is_paused = not self.is_paused
@@ -64,12 +75,14 @@ class TimerApp: # Erstellt eine Klasse mit dem Namen TimerApp
             time_format = '{:02d}:{:01d}'.format(int(secs), int(tenths * 10))
             self.timer_label.config(text=time_format)
         self.root.after(100, self.update_clock)
-        
+
     def update_timer_label(self):
         secs, tenths = divmod(self.remaining_time, 1)
         time_format = '{:02d}:{:01d}'.format(int(secs), int(tenths * 10))
         self.timer_label.config(text=time_format)
-        
+
+
+
 if __name__ == "__main__":
     root = tk.Tk()
     app = TimerApp(root)
