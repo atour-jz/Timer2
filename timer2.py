@@ -45,24 +45,21 @@ class TimerApp: # Erstellt eine Klasse mit dem Namen TimerApp
         root.bind("4", self.increase_timer)
         
 
+    def adjust_colors(self):
+        if self.remaining_time < 5:
+            self.timer_label.config(fg="black", bg="red")
+        else:
+            self.timer_label.config(fg="red", bg="black")
+
     def set_timer(self, seconds):
         self.logo_label.pack_forget()
-        self.timer_label.pack(fill='both', expand=True)  # Zeigt den Timer an
-        if self.is_paused:
-            self.remaining_time = seconds  # Setzt den Timer auf die gegebene Zeit
-            # Setzen Sie die Farben auf die ursprünglichen Werte zurück
-            self.timer_label.config(bg='black', fg='red')
-            self.update_timer_label()
-        else:
-            self.remaining_time = seconds  # Setzt den Timer auf die gegebene Zeit
-            # Setzen Sie die Farben auf die ursprünglichen Werte zurück
-            self.timer_label.config(bg='black', fg='red')
-            self.start_timer(self.remaining_time)  # Startet den Timer wieder
-    
-    #def start_timer(self, seconds):
-     #   self.remaining_time = seconds
-      #  self.is_paused = False
+        self.timer_label.pack(fill='both', expand=True)
+        self.remaining_time = seconds
+        self.is_paused = False
+        self.adjust_colors()
+        self.update_timer_label()
 
+    
     def toggle_timer(self, event):
         self.is_paused = not self.is_paused
 
@@ -78,29 +75,21 @@ class TimerApp: # Erstellt eine Klasse mit dem Namen TimerApp
             self.remaining_time += 1
             self.update_timer_label()
             
-    def update_clock(self):
-        if self.remaining_time > 0 and not self.is_paused:
-            self.remaining_time -= 0.1
-            if self.remaining_time < 0:
-                self.remaining_time = 0  # Stellt sicher, dass die Zeit nicht negativ wird
-            secs, tenths = divmod(self.remaining_time, 1)
-            time_format = '{:02d}:{:01d}'.format(int(secs), int(tenths * 10))
-            self.timer_label.config(text=time_format)
-        self.root.after(100, self.update_clock)
 
     def update_timer_label(self):
         secs, tenths = divmod(self.remaining_time, 1)
         time_format = '{:02d}:{:01d}'.format(int(secs), int(tenths * 10))
-        # Überprüfen Sie, ob die verbleibende Zeit kleiner als 5 ist
-        if secs < 5:
-            # Ändern Sie die Farben zu den invertierten Farben
-            self.timer_label.config(text=time_format, bg='red', fg='black')
-        else:
-            # Setzen Sie die Farben auf die ursprünglichen Werte zurück
-            self.timer_label.config(text=time_format, bg='black', fg='red')
-       
-        if self.remaining_time > 0:
-            self.root.after(100, self.update_timer_label)
+        self.timer_label.config(text=time_format)
+        self.adjust_colors()
+
+    def update_clock(self):
+        if self.remaining_time > 0 and not self.is_paused:
+            self.remaining_time -= 0.1
+            if self.remaining_time < 0:
+                self.remaining_time = 0
+        self.update_timer_label()
+        self.root.after(100, self.update_clock)
+                    
 
 
 if __name__ == "__main__":
