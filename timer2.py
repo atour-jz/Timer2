@@ -55,9 +55,14 @@ class TimerApp: # Erstellt eine Klasse mit dem Namen TimerApp
         self.logo_label.pack_forget()
         self.timer_label.pack(fill='both', expand=True)
         self.remaining_time = seconds
-        self.is_paused = False
         self.adjust_colors()
         self.update_timer_label()
+        if not self.is_paused:
+            # Wenn der Timer läuft, wird er direkt neu gestartet
+            self.is_paused = False
+        else:
+            # Wenn der Timer pausiert ist, wird er nur eingestellt, aber nicht gestartet
+            self.is_paused = True
 
     
     def toggle_timer(self, event):
@@ -87,6 +92,8 @@ class TimerApp: # Erstellt eine Klasse mit dem Namen TimerApp
             self.remaining_time -= 0.1
             if self.remaining_time < 0:
                 self.remaining_time = 0
+                self.is_paused = True
+
         self.update_timer_label()
         self.root.after(100, self.update_clock)
                     
