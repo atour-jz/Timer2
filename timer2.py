@@ -4,12 +4,15 @@ from PIL import Image, ImageTk
 from tkinter import *
 from PIL import Image, ImageTk
 import os
+import subprocess
+
 
 
 class TimerApp: # Erstellt eine Klasse mit dem Namen TimerApp
     def __init__(self, root):
         self.root = root
         image = Image.open("logo-vektor.png")  # Use image file name if it's in the same directory
+        self.alarm_process = None
 
         # Ändern Sie die Größe des Bildes
         new_size = (700, 700)  # Setzen Sie die gewünschte Größe hier
@@ -47,7 +50,14 @@ class TimerApp: # Erstellt eine Klasse mit dem Namen TimerApp
         root.bind("4", self.increase_timer)
         
     def play_alarm(self):
-        os.system('afplay "Basketball_Buzzer_lang.wav" &')
+        if self.alarm_process is not None:
+            self.alarm_process.terminate()  # Beendet einen bereits laufenden Alarm
+        self.alarm_process = subprocess.Popen(['afplay', 'Basketball_Buzzer_lang.wav'])
+
+    def stop_alarm(self):
+        if self.alarm_process is not None:
+            self.alarm_process.terminate()
+            self.alarm_process = None
 
     def adjust_colors(self):
         if self.remaining_time < 5:
@@ -56,6 +66,7 @@ class TimerApp: # Erstellt eine Klasse mit dem Namen TimerApp
             self.timer_label.config(fg="red", bg="black")
 
     def set_timer(self, seconds):
+        self.stop_alarm()  # Stoppt den Alarm, wenn "1" oder "2" gedrückt wird
         self.logo_label.pack_forget()
         self.timer_label.pack(fill='both', expand=True)
         self.remaining_time = seconds
