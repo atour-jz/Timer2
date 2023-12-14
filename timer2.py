@@ -3,6 +3,8 @@ from tkinter import font
 from PIL import Image, ImageTk
 from tkinter import *
 from PIL import Image, ImageTk
+import os
+
 
 class TimerApp: # Erstellt eine Klasse mit dem Namen TimerApp
     def __init__(self, root):
@@ -44,6 +46,8 @@ class TimerApp: # Erstellt eine Klasse mit dem Namen TimerApp
         root.bind("3", self.decrese_timer)
         root.bind("4", self.increase_timer)
         
+    def play_alarm(self):
+        os.system('afplay "Basketball_Buzzer_lang.wav" &')
 
     def adjust_colors(self):
         if self.remaining_time < 5:
@@ -93,6 +97,7 @@ class TimerApp: # Erstellt eine Klasse mit dem Namen TimerApp
             if self.remaining_time < 0:
                 self.remaining_time = 0
                 self.is_paused = True
+                self.play_alarm() # Spielt den Alarm ab, wenn der Timer abgelaufen ist
 
         self.update_timer_label()
         self.root.after(100, self.update_clock)
