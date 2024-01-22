@@ -27,8 +27,8 @@ class TimerApp: # Erstellt eine Klasse mit dem Namen TimerApp
         root.configure(background='black')  # Setzt den Hintergrund des Fensters (root) auf schwarz 
         root.attributes('-fullscreen', True)
 
-        
-        self.font = font.Font(family="Helvetica", size=500) # Setzt die Schriftart auf Helvetica und die Schriftgröße auf 500 Pixel
+
+        self.font = font.Font(family="Helvetica", size=700) # Setzt die Schriftart auf Helvetica und die Schriftgröße auf 500 Pixel
         self.timer_label = tk.Label(root, text="00:00", fg="red", bg="black", font=self.font) # Erstellt ein Label mit dem Text "00:00" und der Schriftfarbe rot und dem Hintergrund schwarz und der Schriftart Helvetica und der Schriftgröße 500 Pixel 
         self.timer_label.pack(fill='both', expand=True) # Packt das Label in das Fenster (root) ein und zentriert es automatisch in der Mitte des Fensters (root) 
         self.timer_label.pack_forget()  # Versteckt den Timer zu Beginn
@@ -98,17 +98,21 @@ class TimerApp: # Erstellt eine Klasse mit dem Namen TimerApp
 
     def update_timer_label(self):
         secs, tenths = divmod(self.remaining_time, 1)
-        time_format = '{:02d}:{:01d}'.format(int(secs), int(tenths * 10))
+        time_format = '{:02d}.{:01d}'.format(int(secs), int(tenths * 10))
         self.timer_label.config(text=time_format)
         self.adjust_colors()
+
+    def start_alarm(self):
+        if self.remaining_time <= 0:
+            self.play_alarm()  # Spielt den Alarm ab, wenn der Timer abgelaufen ist
 
     def update_clock(self):
         if self.remaining_time > 0 and not self.is_paused:
             self.remaining_time -= 0.1
-            if self.remaining_time < 0:
+            if self.remaining_time <= 0:
                 self.remaining_time = 0
                 self.is_paused = True
-                self.play_alarm() # Spielt den Alarm ab, wenn der Timer abgelaufen ist
+                self.start_alarm()
 
         self.update_timer_label()
         self.root.after(100, self.update_clock)
