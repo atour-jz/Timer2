@@ -46,8 +46,11 @@ class TimerApp: # Erstellt eine Klasse mit dem Namen TimerApp
 
         root.bind("1", lambda event: self.set_timer(24))
         root.bind("2", lambda event: self.set_timer(14))
+        root.bind("6", lambda event: self.set_timer(60))
         root.bind("3", self.decrese_timer)
         root.bind("4", self.increase_timer)
+        root.bind("7", lambda event: self.set_timer(999))
+        
         
     def play_alarm(self):
         if self.alarm_process is not None:
@@ -60,10 +63,15 @@ class TimerApp: # Erstellt eine Klasse mit dem Namen TimerApp
             self.alarm_process = None
 
     def adjust_colors(self):
-        if self.remaining_time < 5:
+        if self.remaining_time == 999:
+            # Setzt sowohl Schriftfarbe als auch Hintergrundfarbe auf Schwarz
+            self.timer_label.config(fg="black", bg="black")
+            self.logo_label.pack_forget()
+        elif self.remaining_time < 5:
             self.timer_label.config(fg="black", bg="red")
         else:
             self.timer_label.config(fg="red", bg="black")
+
 
     def set_timer(self, seconds):
         self.stop_alarm()  # Stoppt den Alarm, wenn "1" oder "2" gedrückt wird
@@ -103,8 +111,8 @@ class TimerApp: # Erstellt eine Klasse mit dem Namen TimerApp
         self.adjust_colors()
 
     def start_alarm(self):
-        if self.remaining_time <= 0:
-            self.play_alarm()  # Spielt den Alarm ab, wenn der Timer abgelaufen ist
+#        if self.remaining_time <= 0:
+        self.play_alarm()  # Spielt den Alarm ab, wenn der Timer abgelaufen ist
 
     def update_clock(self):
         if self.remaining_time > 0 and not self.is_paused:
