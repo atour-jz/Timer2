@@ -63,7 +63,7 @@ class TimerApp: # Erstellt eine Klasse mit dem Namen TimerApp
             self.alarm_process = None
 
     def adjust_colors(self):
-        if self.remaining_time == 999:
+        if self.remaining_time >= 800:
             # Setzt sowohl Schriftfarbe als auch Hintergrundfarbe auf Schwarz
             self.timer_label.config(fg="black", bg="black")
             self.logo_label.pack_forget()
